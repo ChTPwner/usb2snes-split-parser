@@ -1,5 +1,7 @@
+//! #USB2SNES SPLIT PARSER
+//!
+//! A simple library to parse USB2SNES definitions files for Autosplitting
 #![allow(dead_code)]
-#![allow(unused_variables)]
 
 use serde::Deserialize;
 use serde_json::Value;
@@ -8,7 +10,6 @@ use std::error::Error;
 use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
-
 
 pub fn string_to_u32(hex_address: &str) -> Result<u32, Box<dyn Error>> {
     Ok(u32::from_str_radix(hex_address, 16)?)
@@ -33,22 +34,23 @@ pub enum ComparisonTypes {
 
 #[derive(Deserialize, Debug)]
 pub struct Config {
-    name: Option<String>,
-    autostart: Option<Autostart>,
-    igt: Option<InGameTime>,
+    pub name: Option<String>,
+    pub autostart: Option<Autostart>,
+    pub igt: Option<InGameTime>,
     #[serde(default = "HashMap::new")]
-    alias: HashMap<String, Value>,
-    definitions: Vec<SplitDefinition>,
+    pub alias: HashMap<String, Value>,
+    pub definitions: Vec<SplitDefinition>,
 }
 
+/// Autostart struct
 #[derive(Deserialize, Debug)]
 pub struct Autostart {
-    active: String,
-    address: String,
-    value: String,
-    r#type: String,
-    next: Option<Vec<SplitDefinition>>,
-    more: Option<Vec<SplitDefinition>>,
+    pub active: String,
+    pub address: String,
+    pub value: String,
+    pub r#type: String,
+    pub next: Option<Vec<SplitDefinition>>,
+    pub more: Option<Vec<SplitDefinition>>,
 }
 
 impl Autostart {
@@ -63,13 +65,13 @@ impl Autostart {
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct SplitDefinition {
-    name: Option<String>,
-    note: Option<String>,
-    address: String,
-    value: String,
-    r#type: ComparisonTypes,
-    next: Option<Vec<SplitDefinition>>,
-    more: Option<Vec<SplitDefinition>>,
+    pub name: Option<String>,
+    pub note: Option<String>,
+    pub address: String,
+    pub value: String,
+    pub r#type: ComparisonTypes,
+    pub next: Option<Vec<SplitDefinition>>,
+    pub more: Option<Vec<SplitDefinition>>,
 }
 
 impl SplitDefinition {
@@ -97,11 +99,11 @@ impl SplitDefinition {
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct InGameTime {
-    active: String,
-    frames_address: String,
-    seconds_address: String,
-    minutes_address: String,
-    hours_address: String,
+    pub active: String,
+    pub frames_address: String,
+    pub seconds_address: String,
+    pub minutes_address: String,
+    pub hours_address: String,
 }
 
 impl InGameTime {
@@ -186,8 +188,8 @@ mod tests {
             "0x6969".to_string(),
             "2".to_string(),
             ComparisonTypes::Eq,
-            None, 
-            None
+            None,
+            None,
         );
 
         assert_eq!(&split.address, "0x6969")
